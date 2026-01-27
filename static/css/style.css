@@ -1,0 +1,270 @@
+/* Базовые стили + звёздный фон */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: #eee;
+  background: radial-gradient(ellipse at bottom, #0b1020 0%, #07070b 100%);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+#starfield {
+  position: fixed;
+  top: 0; 
+  left: 0; 
+  right: 0;
+  bottom: 0;
+  width: 100vw; 
+  height: 100vh; 
+  z-index: 0;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.site-header {
+  position: relative; z-index: 2; padding: 6rem 0 3rem; color: #ffd700; text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+.title {
+  font-family: 'Star Jedi', sans-serif; /* если нет, просто будет fallback */
+  font-size: 4rem;
+  letter-spacing: 6px;
+}
+
+.container { 
+  position: relative; 
+  z-index: 2; 
+  min-height: calc(100vh - 300px);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Стили для секций с контентом */
+section {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Центрирование заголовка "Фракции" */
+section h2 {
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.card { 
+  background: rgba(25, 25, 25, 0.95); 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  color: #fff; 
+  overflow: hidden;
+}
+.card-body {
+  background: rgba(30, 30, 30, 1);
+  padding: 1rem;
+}
+.card-title {
+  color: #fff !important;
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.card img { 
+  max-height: 220px; 
+  object-fit: cover; 
+  width: 100%;
+}
+
+/* Стили для ссылок-карточек: убираем стандартное оформление ссылок */
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.card-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.faction-card:hover, .hero-card:hover { transform: translateY(-6px); transition: all 200ms ease; }
+
+.text-truncate { max-height: 3.6em; overflow: hidden; }
+
+/* Стили для текста */
+.lead {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.text-muted {
+  color: #888 !important;
+}
+
+/* Стили для обычных ссылок */
+a {
+  color: #4a9eff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: #6bb3ff;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 2.4rem; }
+}
+
+
+/* Темнее фон для страниц faction/hero — ещё темнее, почти чёрный */
+body.dark-twinkle {
+  background: radial-gradient(ellipse at bottom, #020203 0%, #000000 100%);
+}
+
+/* скрыть/сделать менее ярким большой заголовок на внутренних страницах */
+body.dark-twinkle .site-header {
+  color: #dcdfe6;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.95);
+  padding-top: 3.5rem;
+  padding-bottom: 1.5rem;
+}
+body.dark-twinkle .site-header .title {
+  color: #e6e9ef;
+  font-size: 2.6rem;
+  letter-spacing: 4px;
+}
+
+/* чуть меньше контраст на карточках, чтобы не конфликтовали с бликами */
+body.dark-twinkle .card {
+  background: rgba(255,255,255,0.02);
+  border: 0;
+}
+
+/* Admin mode: ещё темнее */
+body.admin {
+  background: radial-gradient(ellipse at bottom, #040202 0%, #020101 100%);
+}
+
+/* Стили для форм и элементов Bootstrap на тёмном фоне */
+.form-control, .form-select {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #eee;
+}
+.form-control:focus, .form-select:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #4a9eff;
+  color: #eee;
+  box-shadow: 0 0 0 0.2rem rgba(74, 158, 255, 0.25);
+}
+.form-control::placeholder {
+  color: #aaa;
+}
+
+.form-label {
+  color: #ddd;
+}
+
+/* Стили для списков */
+.list-group-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #eee;
+}
+
+/* Стили для алертов */
+.alert {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.4);
+  color: #f8d7da;
+}
+
+/* Переопределение стилей кнопок для лучшей видимости на тёмном фоне */
+.btn {
+  border: none;
+}
+.btn-primary {
+  background-color: #4a9eff;
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: #6bb3ff;
+  color: #fff;
+}
+.btn-success {
+  background-color: #28a745;
+  color: #fff;
+}
+.btn-success:hover {
+  background-color: #34ce57;
+  color: #fff;
+}
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #e4606d;
+  color: #fff;
+}
+.btn-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+.btn-warning:hover {
+  background-color: #ffca2c;
+  color: #000;
+}
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+.btn-secondary:hover {
+  background-color: #5a6268;
+  color: #fff;
+}
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.8);
+  color: #fff;
+}
+.badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+.bg-primary {
+  background-color: #4a9eff !important;
+}
+.bg-info {
+  background-color: #17a2b8 !important;
+}
+.bg-success {
+  background-color: #28a745 !important;
+}
+.form-select {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #eee;
+}
+.form-select:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #4a9eff;
+  color: #eee;
+  box-shadow: 0 0 0 0.2rem rgba(74, 158, 255, 0.25);
+}
+.form-select option {
+  background-color: #1a1a1a;
+  color: #eee;
+}
+
+

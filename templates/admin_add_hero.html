@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="mt-4">
+    <h3>Добавить героя</h3>
+    <form method="post" action="/admin/add-hero" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Имя</label>
+        <input class="form-control" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Описание</label>
+        <textarea class="form-control" name="description"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Фракция</label>
+        <select class="form-control" name="faction_id">
+          <option value="">-- без фракции --</option>
+          {% for f in factions %}
+            <option value="{{ f.id }}">{{ f.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Картинка (опционально)</label>
+        <input class="form-control" type="file" name="file">
+      </div>
+      <button class="btn btn-primary">Добавить</button>
+    </form>
+  </div>
+{% endblock %}
