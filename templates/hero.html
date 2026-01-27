@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="mt-5">
+    <a href="/faction/{{ hero.faction_id }}">← Вернуться</a>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        {% if hero.image %}
+          <img src="{{ hero.image }}" class="img-fluid rounded shadow-sm" alt="{{ hero.name }}">
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        <h2>{{ hero.name }}</h2>
+        <p class="lead">{{ hero.description }}</p>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+      <div class="card p-4">
+        <h3 class="mb-4">Оставить обращение</h3>
+        {% if request.query_params.get("success") %}
+          <div class="alert alert-success">Ваше обращение успешно отправлено!</div>
+        {% endif %}
+        <form method="post" action="/suggestions">
+          <div class="mb-3">
+            <label class="form-label">Тема</label>
+            <input class="form-control" type="text" name="title" required placeholder="Краткое описание вашего предложения">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Сообщение</label>
+            <textarea class="form-control" name="content" rows="6" required placeholder="Опишите ваше предложение или пожелание по улучшению сайта..."></textarea>
+          </div>
+          <button class="btn btn-primary">Отправить обращение</button>
+          <a class="btn btn-secondary" href="/">На главную</a>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

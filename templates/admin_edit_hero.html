@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="mt-4">
+    <h3>Изменить героя</h3>
+    <form method="post" action="/admin/edit-hero/{{ hero.id }}" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Имя</label>
+        <input class="form-control" name="name" value="{{ hero.name }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Описание</label>
+        <textarea class="form-control" name="description">{{ hero.description or '' }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Фракция</label>
+        <select class="form-control" name="faction_id">
+          <option value="">-- без фракции --</option>
+          {% for f in factions %}
+            <option value="{{ f.id }}" {% if hero.faction_id == f.id %}selected{% endif %}>{{ f.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Текущая картинка</label>
+        {% if hero.image %}
+          <div class="mb-2">
+            <img src="{{ hero.image }}" alt="{{ hero.name }}" style="max-width: 200px; max-height: 200px; object-fit: cover; border-radius: 4px;">
+          </div>
+        {% else %}
+          <p class="text-muted">Картинка не загружена</p>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Новая картинка (оставьте пустым, чтобы не менять)</label>
+        <input class="form-control" type="file" name="file">
+      </div>
+      <button class="btn btn-primary">Сохранить изменения</button>
+      <a class="btn btn-secondary" href="/admin">Отмена</a>
+    </form>
+  </div>
+{% endblock %}

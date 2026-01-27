@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="mt-5">
+    <a href="/">← Вернуться</a>
+    <h2 class="mt-2">{{ faction.name }}</h2>
+    <div class="row mt-4">
+      {% for h in heroes %}
+        <div class="col-md-4 mb-4">
+          <a href="/hero/{{ h.id }}" class="card-link">
+            <div class="card hero-card h-100 shadow-sm">
+              {% if h.image %}
+                <img src="{{ h.image }}" class="card-img-top" alt="{{ h.name }}">
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ h.name }}</h5>
+                <p class="card-text text-truncate">{{ h.description }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% else %}
+        <p class="text-muted">У этой фракции пока нет героев.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

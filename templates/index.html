@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="mt-5 mb-5">
+    <h2>Фракции</h2>
+    <div class="row">
+      {% for f in factions %}
+        <div class="col-md-4 mb-4">
+          <a href="/faction/{{ f.id }}" class="card-link">
+            <div class="card faction-card h-100 shadow-sm">
+              {% if f.image %}
+                <img src="{{ f.image }}" class="card-img-top" alt="{{ f.name }}">
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ f.name }}</h5>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mt-4">
+  <h2>Админка</h2>
+  <div>
+    <a class="btn btn-success" href="/admin/add-faction">Добавить фракцию</a>
+    <a class="btn btn-success" href="/admin/add-hero">Добавить героя</a>
+  </div>
+</div>
+
+<section class="mt-4">
+  <h4>Фракции</h4>
+  <ul class="list-group">
+    {% for f in factions %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <div>{{ f.name }} (id: {{ f.id }})</div>
+      <div>
+        <a
+          class="btn btn-sm btn-primary"
+          href="/faction/{{ f.id }}"
+          target="_blank"
+          >Просмотр</a
+        >
+        <a
+          class="btn btn-sm btn-warning"
+          href="/admin/edit-faction/{{ f.id }}"
+          >Изменить</a
+        >
+        <form
+          method="post"
+          action="/admin/delete-faction"
+          style="display: inline"
+          onsubmit="return confirm('Удалить фракцию и всех её героев?');"
+        >
+          <input type="hidden" name="faction_id" value="{{ f.id }}" />
+          <button class="btn btn-sm btn-danger">Удалить</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <h4 class="mt-3">Герои</h4>
+  <ul class="list-group">
+    {% for h in heroes %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <div>
+        {{ h.name }} 
+        {% if h.faction_id %}
+          — <span class="text-muted">{{ h.faction.name }}</span>
+        {% else %}
+          — <span class="text-muted">без фракции</span>
+        {% endif %}
+      </div>
+      <div>
+        <a
+          class="btn btn-sm btn-primary"
+          href="/hero/{{ h.id }}"
+          target="_blank"
+          >Просмотр</a
+        >
+        <a
+          class="btn btn-sm btn-warning"
+          href="/admin/edit-hero/{{ h.id }}"
+          >Изменить</a
+        >
+        <form
+          method="post"
+          action="/admin/delete-hero"
+          style="display: inline"
+          onsubmit="return confirm('Удалить героя?');"
+        >
+          <input type="hidden" name="hero_id" value="{{ h.id }}" />
+          <button class="btn btn-sm btn-danger">Удалить</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="mt-4">
+  <h4>Обращения пользователей</h4>
+  {% if suggestions %}
+    <ul class="list-group">
+      {% for s in suggestions %}
+      <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="flex-grow-1">
+            <h6 class="mb-1">
+              {{ s.title }}
+              <span class="badge 
+                {% if s.status == 'new' %}bg-primary
+                {% elif s.status == 'read' %}bg-info
+                {% else %}bg-success
+                {% endif %}">
+                {% if s.status == 'new' %}Новое
+                {% elif s.status == 'read' %}Прочитано
+                {% else %}Отвечено
+                {% endif %}
+              </span>
+            </h6>
+            <p class="mb-1">{{ s.content }}</p>
+            <small class="text-muted">
+              От: {{ s.user.username if s.user else 'Неизвестный' }} | 
+              {{ s.created_at.strftime('%d.%m.%Y %H:%M') }}
+            </small>
+          </div>
+          <div class="ms-3">
+            <form method="post" action="/admin/suggestion/{{ s.id }}/status" style="display: inline;">
+              <select name="new_status" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="new" {% if s.status == 'new' %}selected{% endif %}>Новое</option>
+                <option value="read" {% if s.status == 'read' %}selected{% endif %}>Прочитано</option>
+                <option value="responded" {% if s.status == 'responded' %}selected{% endif %}>Отвечено</option>
+              </select>
+            </form>
+            <form method="post" action="/admin/suggestion/{{ s.id }}/delete" style="display: inline;" onsubmit="return confirm('Удалить обращение?');">
+              <button class="btn btn-sm btn-danger mt-1">Удалить</button>
+            </form>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">Обращений пока нет</p>
+  {% endif %}
+</section>
+{% endblock %}

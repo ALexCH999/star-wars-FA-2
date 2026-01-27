@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="mt-4">
+    <h3>Добавить фракцию</h3>
+    <form method="post" action="/admin/add-faction" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Название</label>
+        <input class="form-control" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Картинка (опционально)</label>
+        <input class="form-control" type="file" name="file">
+      </div>
+      <button class="btn btn-primary">Добавить</button>
+    </form>
+  </div>
+{% endblock %}
