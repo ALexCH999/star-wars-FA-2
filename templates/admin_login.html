@@ -1,20 +1,29 @@
-{% extends "base.html" %}
-{% block content %}
-  <div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-      <div class="card p-4">
-        <h3>Админ-панель</h3>
-        {% if error %}
-          <div class="alert alert-danger">{{ error }}</div>
-        {% endif %}
-        <form method="post" action="/admin/login">
-          <div class="mb-3">
-            <label class="form-label">Пароль</label>
-            <input class="form-control" type="password" name="password" required>
-          </div>
-          <button class="btn btn-primary">Войти</button>
-        </form>
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3>Админ-панель</h3>
+      {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+      <form method="post" action="/admin/login">
+        <div class="mb-3">
+          <label class="form-label">Пароль</label>
+          <input
+            class="form-control"
+            type="password"
+            name="password"
+            required
+          />
+        </div>
+        <button class="btn btn-primary">Войти</button>
+      </form>
+      <div class="text-center mt-3">
+        <p>
+          <a href="/" class="btn btn-secondary btn-sm">← Назад на главную</a>
+        </p>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

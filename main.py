@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select, SQLModel
 
-from models import Faction, Hero
+from models import Faction, Hero, User, Suggestion
 from database import engine
 
 app = FastAPI()
