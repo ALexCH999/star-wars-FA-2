@@ -8,7 +8,7 @@
 
   // Global tuning by mode
   let NUM_STARS = 200;
-  let BASE_SPEED = 0.6;
+  let BASE_SPEED = 0.2;
   // COLOR is an RGB string, used in rgba(...)
   let COLOR = '255,255,255';
   let TWINKLE = false;
@@ -18,14 +18,14 @@
 
   if (MODE.includes('index-slow')) {
     NUM_STARS = 180;
-    BASE_SPEED = 0.35; // slower on home
+    BASE_SPEED = 0.2; // slower on home
     TWINKLE = false;
     COLOR = '220,230,255';
     CROSS_GLOBAL_CHANCE = 0.0005;
   } else if (MODE.includes('dark-twinkle')) {
     // much darker, with occasional cross-shaped emission
     NUM_STARS = 160;
-    BASE_SPEED = 0.25;
+    BASE_SPEED = 0.08;
     TWINKLE = true;
     TWINKLE_INTENSITY = 0.55;
     COLOR = '200,220,255'; // soft bluish base for stars
@@ -33,16 +33,16 @@
   } else if (MODE.includes('admin')) {
     // admin mode: dark + red stars (explicitly red)
     NUM_STARS = 140;
-    BASE_SPEED = 0.18;
+    BASE_SPEED = 0.1;
     TWINKLE = true;
-    TWINKLE_INTENSITY = 0.9;
+    TWINKLE_INTENSITY = 0.5;
     // a range of red-ish tones (we'll pick per-star hue variation)
     COLOR = null; // null signals per-star red variance (handled below)
     CROSS_GLOBAL_CHANCE = 0.0015;
   } else {
     // default / fallback
     NUM_STARS = 200;
-    BASE_SPEED = 0.6;
+    BASE_SPEED = 0.25;
     TWINKLE = false;
     COLOR = '255,255,255';
     CROSS_GLOBAL_CHANCE = 0.0008;
