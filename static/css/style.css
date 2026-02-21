@@ -1,11 +1,11 @@
-/* Базовые стили + звёздный фон */
+/* Р‘Р°Р·РѕРІС‹Рµ СЃС‚РёР»Рё + Р·РІС‘Р·РґРЅС‹Р№ С„РѕРЅ */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
   color: #eee;
   background: radial-gradient(ellipse at bottom, #0b1020 0%, #07070b 100%);
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: "Exo 2", "Segoe UI", Tahoma, sans-serif;
 }
 
 #starfield {
@@ -26,17 +26,17 @@ html, body {
   position: relative;
   z-index: 2;
   padding: 6rem 2rem 3rem 0;
-  color: #ffd700;
+  color: #ffe27a;
   text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
 
 .title {
-  font-family: 'Star Jedi', sans-serif; /* если нет, просто будет fallback */
+  font-family: "Orbitron", "Exo 2", sans-serif;
   font-size: 4rem;
   letter-spacing: 6px;
 }
 
-/* Стили для кнопок в правом верхнем углу */
+/* РЎС‚РёР»Рё РґР»СЏ РєРЅРѕРїРѕРє РІ РїСЂР°РІРѕРј РІРµСЂС…РЅРµРј СѓРіР»Сѓ */
 .header-buttons {
   position: absolute;
   top: 2rem;
@@ -67,15 +67,15 @@ html, body {
   padding-bottom: 2rem;
 }
 
-/* Стили для секций с контентом */
+/* РЎС‚РёР»Рё РґР»СЏ СЃРµРєС†РёР№ СЃ РєРѕРЅС‚РµРЅС‚РѕРј */
 section {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
-/* Центрирование заголовка "Фракции" */
+/* Р¦РµРЅС‚СЂРёСЂРѕРІР°РЅРёРµ Р·Р°РіРѕР»РѕРІРєР° "Р¤СЂР°РєС†РёРё" */
 section h2 {
-  color: #ffd700;
+  color: #ffe27a;
   text-align: center;
   margin-bottom: 2rem;
   font-weight: 600;
@@ -103,7 +103,7 @@ section h2 {
   width: 100%;
 }
 
-/* Стили для ссылок-карточек: убираем стандартное оформление ссылок */
+/* РЎС‚РёР»Рё РґР»СЏ СЃСЃС‹Р»РѕРє-РєР°СЂС‚РѕС‡РµРє: СѓР±РёСЂР°РµРј СЃС‚Р°РЅРґР°СЂС‚РЅРѕРµ РѕС„РѕСЂРјР»РµРЅРёРµ СЃСЃС‹Р»РѕРє */
 .card-link {
   text-decoration: none;
   color: inherit;
@@ -118,9 +118,9 @@ section h2 {
 
 .text-truncate { max-height: 3.6em; overflow: hidden; }
 
-/* Стили для текста */
-.lead {
-  color: #ccc;
+/* РЎС‚РёР»Рё РґР»СЏ С‚РµРєСЃС‚Р° */
+ .lead {
+  color: #d3dbf0;
   font-size: 1.1rem;
   margin-bottom: 1rem;
 }
@@ -129,14 +129,14 @@ section h2 {
   color: #888 !important;
 }
 
-/* Стили для обычных ссылок */
+/* РЎС‚РёР»Рё РґР»СЏ РѕР±С‹С‡РЅС‹С… СЃСЃС‹Р»РѕРє */
 a {
-  color: #4a9eff;
+  color: #7fc2ff;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 a:hover {
-  color: #6bb3ff;
+  color: #b2dbff;
   text-decoration: underline;
 }
 
@@ -145,12 +145,12 @@ a:hover {
 }
 
 
-/* Темнее фон для страниц faction/hero — ещё темнее, почти чёрный */
+/* РўРµРјРЅРµРµ С„РѕРЅ РґР»СЏ СЃС‚СЂР°РЅРёС† faction/hero вЂ” РµС‰С‘ С‚РµРјРЅРµРµ, РїРѕС‡С‚Рё С‡С‘СЂРЅС‹Р№ */
 body.dark-twinkle {
   background: radial-gradient(ellipse at bottom, #020203 0%, #000000 100%);
 }
 
-/* скрыть/сделать менее ярким большой заголовок на внутренних страницах */
+/* СЃРєСЂС‹С‚СЊ/СЃРґРµР»Р°С‚СЊ РјРµРЅРµРµ СЏСЂРєРёРј Р±РѕР»СЊС€РѕР№ Р·Р°РіРѕР»РѕРІРѕРє РЅР° РІРЅСѓС‚СЂРµРЅРЅРёС… СЃС‚СЂР°РЅРёС†Р°С… */
 body.dark-twinkle .site-header {
   color: #dcdfe6;
   text-shadow: 0 2px 6px rgba(0,0,0,0.95);
@@ -163,18 +163,18 @@ body.dark-twinkle .site-header .title {
   letter-spacing: 4px;
 }
 
-/* чуть меньше контраст на карточках, чтобы не конфликтовали с бликами */
+/* С‡СѓС‚СЊ РјРµРЅСЊС€Рµ РєРѕРЅС‚СЂР°СЃС‚ РЅР° РєР°СЂС‚РѕС‡РєР°С…, С‡С‚РѕР±С‹ РЅРµ РєРѕРЅС„Р»РёРєС‚РѕРІР°Р»Рё СЃ Р±Р»РёРєР°РјРё */
 body.dark-twinkle .card {
   background: rgba(255,255,255,0.02);
   border: 0;
 }
 
-/* Admin mode: ещё темнее */
+/* Admin mode: РµС‰С‘ С‚РµРјРЅРµРµ */
 body.admin {
   background: radial-gradient(ellipse at bottom, #040202 0%, #020101 100%);
 }
 
-/* Стили для форм и элементов Bootstrap на тёмном фоне */
+/* РЎС‚РёР»Рё РґР»СЏ С„РѕСЂРј Рё СЌР»РµРјРµРЅС‚РѕРІ Bootstrap РЅР° С‚С‘РјРЅРѕРј С„РѕРЅРµ */
 .form-control, .form-select {
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -182,9 +182,9 @@ body.admin {
 }
 .form-control:focus, .form-select:focus {
   background-color: rgba(255, 255, 255, 0.15);
-  border-color: #4a9eff;
+  border-color: #7fc2ff;
   color: #eee;
-  box-shadow: 0 0 0 0.2rem rgba(74, 158, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(127, 194, 255, 0.25);
 }
 .form-control::placeholder {
   color: #aaa;
@@ -194,14 +194,14 @@ body.admin {
   color: #ddd;
 }
 
-/* Стили для списков */
+/* РЎС‚РёР»Рё РґР»СЏ СЃРїРёСЃРєРѕРІ */
 .list-group-item {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #eee;
 }
 
-/* Стили для алертов */
+/* РЎС‚РёР»Рё РґР»СЏ Р°Р»РµСЂС‚РѕРІ */
 .alert {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -211,16 +211,16 @@ body.admin {
   color: #f8d7da;
 }
 
-/* Переопределение стилей кнопок для лучшей видимости на тёмном фоне */
+/* РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ СЃС‚РёР»РµР№ РєРЅРѕРїРѕРє РґР»СЏ Р»СѓС‡С€РµР№ РІРёРґРёРјРѕСЃС‚Рё РЅР° С‚С‘РјРЅРѕРј С„РѕРЅРµ */
 .btn {
   border: none;
 }
-.btn-primary {
-  background-color: #4a9eff;
+ .btn-primary {
+  background-color: #4b7bff;
   color: #fff;
 }
-.btn-primary:hover {
-  background-color: #6bb3ff;
+ .btn-primary:hover {
+  background-color: #6ea0ff;
   color: #fff;
 }
 .btn-success {
@@ -239,12 +239,12 @@ body.admin {
   background-color: #e4606d;
   color: #fff;
 }
-.btn-warning {
-  background-color: #cd9a04;
+ .btn-warning {
+  background-color: #ffcf5a;
   color: #000;
 }
-.btn-warning:hover {
-  background-color: #cd9a04;
+ .btn-warning:hover {
+  background-color: #ffd874;
   color: #000;
 }
 .btn-secondary {
@@ -285,9 +285,9 @@ body.admin {
 }
 .form-select:focus {
   background-color: rgba(255, 255, 255, 0.15);
-  border-color: #4a9eff;
+  border-color: #7fc2ff;
   color: #eee;
-  box-shadow: 0 0 0 0.2rem rgba(74, 158, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(127, 194, 255, 0.25);
 }
 .form-select option {
   background-color: #1a1a1a;
@@ -295,3 +295,58 @@ body.admin {
 }
 
 
+
+:root {
+  --sw-title: #ffe27a;
+  --sw-text-main: #eef2ff;
+  --sw-text-soft: #d3dbf0;
+  --sw-link: #7fc2ff;
+  --sw-link-hover: #b2dbff;
+  --sw-accent: #4b7bff;
+}
+
+h1, h2, h3, h4, h5,
+.site-header .title,
+.btn {
+  font-family: "Orbitron", "Exo 2", sans-serif;
+}
+
+body,
+p,
+li,
+label,
+input,
+textarea,
+select,
+.card-title,
+.card-text {
+  font-family: "Exo 2", "Segoe UI", Tahoma, sans-serif;
+}
+
+.site-header {
+  color: var(--sw-title);
+}
+
+.card {
+  border-color: rgba(127, 194, 255, 0.2);
+}
+
+.card-body {
+  background: rgba(17, 21, 32, 0.95);
+}
+
+.btn-primary,
+.bg-primary {
+  background-color: var(--sw-accent) !important;
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.72);
+  color: #f4f7ff;
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(127, 194, 255, 0.2);
+  border-color: rgba(178, 219, 255, 0.95);
+  color: #fff;
+}
