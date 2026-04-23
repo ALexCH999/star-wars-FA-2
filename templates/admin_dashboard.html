@@ -103,7 +103,15 @@
                 {% endif %}
               </span>
             </h6>
+            {% if s.faction %}
+              <p class="mb-1"><strong>Фракция:</strong> {{ s.faction.name }}</p>
+            {% endif %}
             <p class="mb-1">{{ s.content }}</p>
+            {% if s.image %}
+              <div class="mb-2">
+                <img src="{{ s.image }}" alt="Suggestion image" style="max-width: 220px; max-height: 220px; object-fit: cover; border-radius: 6px;">
+              </div>
+            {% endif %}
             <small class="text-muted">
               От: {{ s.user.username if s.user else 'Неизвестный' }} | 
               {{ s.created_at.strftime('%d.%m.%Y %H:%M') }}

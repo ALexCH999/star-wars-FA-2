@@ -11,6 +11,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select, SQLModel
+from sqlalchemy import text
 
 from models import Faction, Hero, User, Suggestion
 from database import engine
@@ -29,8 +30,10 @@ PROJECT_DIR = Path(__file__).parent.resolve()
 UPLOAD_DIR = PROJECT_DIR / "static" / "uploads"
 FACTION_DIR = UPLOAD_DIR / "factions"
 HERO_DIR = UPLOAD_DIR / "heroes"
+SUGGESTION_DIR = UPLOAD_DIR / "suggestions"
 FACTION_DIR.mkdir(parents=True, exist_ok=True)
 HERO_DIR.mkdir(parents=True, exist_ok=True)
+SUGGESTION_DIR.mkdir(parents=True, exist_ok=True)
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme")
 
@@ -42,6 +45,30 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, password_hash: str) -> bool:
     """Проверяет пароль"""
     return hash_password(password) == password_hash
+
+
+def ensure_suggestion_columns() -> None:
+    """Adds new suggestion columns for existing databases."""
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE suggestion ADD COLUMN IF NOT EXISTS image VARCHAR"))
+        conn.execute(text("ALTER TABLE suggestion ADD COLUMN IF NOT EXISTS faction_id INTEGER"))
+        conn.execute(
+            text(
+                "DO $$ "
+                "BEGIN "
+                "IF NOT EXISTS ("
+                "    SELECT 1 FROM pg_constraint WHERE conname = 'fk_suggestion_faction_id'"
+                ") THEN "
+                "    ALTER TABLE suggestion "
+                "    ADD CONSTRAINT fk_suggestion_faction_id "
+                "    FOREIGN KEY (faction_id) REFERENCES faction (id); "
+                "END IF; "
+                "END $$;"
+            )
+        )
+
+
+ensure_suggestion_columns()
 
 
 def get_session() -> Generator[Session, None, None]:
@@ -155,11 +182,22 @@ def suggestions_page(request: Request, session: Session = Depends(get_session)):
     user_id = request.cookies.get("user_id")
     if not user_id:
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("suggestions.html", {"request": request, "body_class": "index-slow"})
+    factions = session.exec(select(Faction).order_by(Faction.name)).all()
+    return templates.TemplateResponse(
+        "suggestions.html",
+        {"request": request, "body_class": "index-slow", "factions": factions},
+    )
 
 
 @app.post("/suggestions")
-def create_suggestion(request: Request, title: str = Form(...), content: str = Form(...), session: Session = Depends(get_session)):
+def create_suggestion(
+    request: Request,
+    title: str = Form(...),
+    content: str = Form(...),
+    faction_id: str = Form(""),
+    file: Optional[UploadFile] = File(None),
+    session: Session = Depends(get_session),
+):
     user_id = request.cookies.get("user_id")
     if not user_id:
         return RedirectResponse(url="/login")
@@ -173,9 +211,27 @@ def create_suggestion(request: Request, title: str = Form(...), content: str = F
     if not user:
         return RedirectResponse(url="/login")
     
+    suggestion_image = None
+    if file is not None and file.filename:
+        ext = Path(file.filename).suffix
+        filename = f"{secrets.token_hex(8)}{ext}"
+        dest = SUGGESTION_DIR / filename
+        with dest.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        suggestion_image = f"/static/uploads/suggestions/{filename}"
+
+    suggestion_faction_id = None
+    if faction_id.strip():
+        try:
+            suggestion_faction_id = int(faction_id)
+        except ValueError:
+            suggestion_faction_id = None
+
     suggestion = Suggestion(
         title=title,
         content=content,
+        image=suggestion_image,
+        faction_id=suggestion_faction_id,
         user_id=user_id_int,
         status="new"
     )
@@ -206,6 +262,8 @@ def admin_index(request: Request, session: Session = Depends(get_session)):
     for s in suggestions:
         if s.user_id:
             s.user = session.get(User, s.user_id)
+        if s.faction_id:
+            s.faction = session.get(Faction, s.faction_id)
     return templates.TemplateResponse("admin_dashboard.html", {
         "request": request, 
         "factions": factions, 

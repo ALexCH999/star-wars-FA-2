@@ -32,7 +32,10 @@ class Suggestion(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     content: str
+    image: Optional[str] = None
+    faction_id: Optional[int] = Field(default=None, foreign_key="faction.id")
     user_id: Optional[int] = Field(default=None, foreign_key="user.id")
     user: Optional[User] = Relationship(back_populates="suggestions")
+    faction: Optional[Faction] = Relationship()
     created_at: datetime = Field(default_factory=datetime.utcnow)
     status: str = Field(default="new")  # new, read, responded

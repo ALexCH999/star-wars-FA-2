@@ -7,14 +7,27 @@
         {% if request.query_params.get("success") %}
           <div class="alert alert-success">Ваше обращение успешно отправлено!</div>
         {% endif %}
-        <form method="post" action="/suggestions">
+        <form method="post" action="/suggestions" enctype="multipart/form-data">
           <div class="mb-3">
             <label class="form-label">Тема</label>
             <input class="form-control" type="text" name="title" required placeholder="Краткое описание вашего предложения">
           </div>
           <div class="mb-3">
+            <label class="form-label">Фракция (опционально)</label>
+            <select class="form-control" name="faction_id">
+              <option value="">-- не выбрано --</option>
+              {% for faction in factions %}
+                <option value="{{ faction.id }}">{{ faction.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
             <label class="form-label">Сообщение</label>
             <textarea class="form-control" name="content" rows="6" required placeholder="Опишите ваше предложение или пожелание по улучшению сайта..."></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Картинка (опционально)</label>
+            <input class="form-control" type="file" name="file" accept="image/*">
           </div>
           <button class="btn btn-primary">Отправить обращение</button>
           <a class="btn btn-secondary" href="/">На главную</a>
