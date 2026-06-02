@@ -56,9 +56,12 @@ USER_SESSION_COOKIE = "user_session"
 ADMIN_SESSION_COOKIE = "admin_session"
 CSRF_MAX_AGE_SECONDS = 60 * 60 * 4
 SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7
+ADMIN_LOGIN_MAX_ATTEMPTS = 5
+ADMIN_LOGIN_LOCKOUT_SECONDS = 15 * 60
 PASSWORD_SCHEME = "scrypt"
 MAX_UPLOAD_SIZE = 5 * 1024 * 1024
 ALLOWED_IMAGE_TYPES = {"image/jpeg": ".jpg", "image/png": ".png", "image/gif": ".gif", "image/webp": ".webp"}
+admin_login_attempts: dict[str, list[float]] = {}
 
 # Функции для работы с паролями
 def hash_password(password: str) -> str:
@@ -146,6 +149,32 @@ def _delete_cookie(response: RedirectResponse, key: str) -> None:
 
 def _client_host(request: Request) -> str:
     return request.client.host if request.client else "unknown"
+
+
+def _admin_login_is_limited(ip_address: str) -> bool:
+    now = time.time()
+    attempts = [
+        attempt_time
+        for attempt_time in admin_login_attempts.get(ip_address, [])
+        if now - attempt_time < ADMIN_LOGIN_LOCKOUT_SECONDS
+    ]
+    admin_login_attempts[ip_address] = attempts
+    return len(attempts) >= ADMIN_LOGIN_MAX_ATTEMPTS
+
+
+def _record_failed_admin_login(ip_address: str) -> None:
+    now = time.time()
+    attempts = [
+        attempt_time
+        for attempt_time in admin_login_attempts.get(ip_address, [])
+        if now - attempt_time < ADMIN_LOGIN_LOCKOUT_SECONDS
+    ]
+    attempts.append(now)
+    admin_login_attempts[ip_address] = attempts
+
+
+def _clear_failed_admin_logins(ip_address: str) -> None:
+    admin_login_attempts.pop(ip_address, None)
 
 
 def _get_user_id(request: Request) -> Optional[int]:
@@ -444,10 +473,21 @@ def admin_index(request: Request, session: Session = Depends(get_session)):
 
 @app.post("/admin/login")
 def admin_login(request: Request, password: str = Form(...), _: None = Depends(verify_csrf)):
+    ip_address = _client_host(request)
+    if _admin_login_is_limited(ip_address):
+        logger.warning("Blocked admin login attempt due to rate limit from IP: %s", ip_address)
+        return templates.TemplateResponse("admin_login.html", {
+            "request": request,
+            "error": "Слишком много попыток входа. Попробуйте позже.",
+            "body_class": "admin"
+        }, status_code=429)
+
     if not hmac.compare_digest(password, ADMIN_PASSWORD):
-        logger.warning("Failed admin login attempt from IP: %s", _client_host(request))
+        _record_failed_admin_login(ip_address)
+        logger.warning("Failed admin login attempt from IP: %s", ip_address)
         return templates.TemplateResponse("admin_login.html", {"request": request, "error": "Неверный пароль", "body_class": "admin"})
-    logger.info("Successful admin login from IP: %s", _client_host(request))
+    _clear_failed_admin_logins(ip_address)
+    logger.info("Successful admin login from IP: %s", ip_address)
     response = RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
     _set_secure_cookie(response, ADMIN_SESSION_COOKIE, _session_token("admin", "admin"))
     _delete_cookie(response, "admin")
