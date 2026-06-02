@@ -3,6 +3,7 @@
   <div class="mt-4">
     <h3>Изменить фракцию</h3>
     <form method="post" action="/admin/edit-faction/{{ faction.id }}" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token_value" value="{{ csrf_token(request) }}" />
       <div class="mb-3">
         <label class="form-label">Название</label>
         <input class="form-control" name="name" value="{{ faction.name }}" required>

@@ -8,6 +8,7 @@
           <div class="alert alert-success">Ваше обращение успешно отправлено!</div>
         {% endif %}
         <form method="post" action="/suggestions" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token_value" value="{{ csrf_token(request) }}" />
           <div class="mb-3">
             <label class="form-label">Тема</label>
             <input class="form-control" type="text" name="title" required placeholder="Краткое описание вашего предложения">

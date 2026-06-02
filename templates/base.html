@@ -20,7 +20,7 @@
       <h1 class="title">Star Wars</h1>
       <p class="lead"></p>
       <div class="header-buttons">
-        {% if request.cookies.get("user_id") %}
+        {% if request.state.is_authenticated %}
         <a href="/suggestions" class="btn btn-sm btn-outline-light"
           >Оставить обращение</a
         >

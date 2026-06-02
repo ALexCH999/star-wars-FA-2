@@ -33,6 +33,7 @@
           style="display: inline"
           onsubmit="return confirm('Удалить фракцию и всех её героев?');"
         >
+          <input type="hidden" name="csrf_token_value" value="{{ csrf_token(request) }}" />
           <input type="hidden" name="faction_id" value="{{ f.id }}" />
           <button class="btn btn-sm btn-danger">Удалить</button>
         </form>
@@ -73,6 +74,7 @@
           style="display: inline"
           onsubmit="return confirm('Удалить героя?');"
         >
+          <input type="hidden" name="csrf_token_value" value="{{ csrf_token(request) }}" />
           <input type="hidden" name="hero_id" value="{{ h.id }}" />
           <button class="btn btn-sm btn-danger">Удалить</button>
         </form>
@@ -119,6 +121,7 @@
           </div>
           <div class="ms-3">
             <form method="post" action="/admin/suggestion/{{ s.id }}/status" style="display: inline;">
+              <input type="hidden" name="csrf_token_value" value="{{ csrf_token(request) }}" />
               <select name="new_status" class="form-select form-select-sm" onchange="this.form.submit()">
                 <option value="new" {% if s.status == 'new' %}selected{% endif %}>Новое</option>
                 <option value="read" {% if s.status == 'read' %}selected{% endif %}>Прочитано</option>
@@ -126,6 +129,7 @@
               </select>
             </form>
             <form method="post" action="/admin/suggestion/{{ s.id }}/delete" style="display: inline;" onsubmit="return confirm('Удалить обращение?');">
+              <input type="hidden" name="csrf_token_value" value="{{ csrf_token(request) }}" />
               <button class="btn btn-sm btn-danger mt-1">Удалить</button>
             </form>
           </div>
