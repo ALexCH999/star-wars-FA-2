@@ -16,9 +16,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy import text
+from dotenv import load_dotenv
 
 from models import Faction, Hero, User, Suggestion
 from database import engine
+
+load_dotenv(Path(__file__).with_name(".env"))
 
 app = FastAPI()
 
