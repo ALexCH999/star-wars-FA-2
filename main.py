@@ -41,10 +41,12 @@ HERO_DIR.mkdir(parents=True, exist_ok=True)
 SUGGESTION_DIR.mkdir(parents=True, exist_ok=True)
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
-SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("SESSION_SECRET")
+if not ADMIN_PASSWORD:
+    raise ValueError("ADMIN_PASSWORD must be set in .env file")
+
+SECRET_KEY = os.getenv("SESSION_SECRET")
 if not SECRET_KEY:
-    SECRET_KEY = secrets.token_urlsafe(32)
-    logger.warning("SECRET_KEY is not set. Sessions will reset after app restart.")
+    raise ValueError("SESSION_SECRET must be set in .env file")
 
 COOKIE_SECURE = os.getenv("COOKIE_SECURE", "0").lower() in {"1", "true", "yes", "on"}
 USER_SESSION_COOKIE = "user_session"
@@ -139,6 +141,10 @@ def _delete_cookie(response: RedirectResponse, key: str) -> None:
     response.delete_cookie(key, httponly=True, secure=COOKIE_SECURE, samesite="lax")
 
 
+def _client_host(request: Request) -> str:
+    return request.client.host if request.client else "unknown"
+
+
 def _get_user_id(request: Request) -> Optional[int]:
     payload = _read_signed_payload(request.cookies.get(USER_SESSION_COOKIE))
     if not payload or payload.get("sub") != "user":
@@ -203,6 +209,7 @@ def get_session() -> Generator[Session, None, None]:
 
 def _admin_check(request: Request):
     if not _is_admin(request):
+        logger.warning("Unauthorized admin access attempt from IP: %s", _client_host(request))
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 
@@ -316,6 +323,7 @@ def login_page(request: Request):
 def login(request: Request, username: str = Form(...), password: str = Form(...), _: None = Depends(verify_csrf), session: Session = Depends(get_session)):
     user = session.exec(select(User).where(User.username == username)).first()
     if not user or not verify_password(password, user.password_hash):
+        logger.warning("Failed login attempt for username=%s from IP: %s", username, _client_host(request))
         return templates.TemplateResponse("login.html", {
             "request": request,
             "error": "Неверное имя пользователя или пароль",
@@ -326,6 +334,8 @@ def login(request: Request, username: str = Form(...), password: str = Form(...)
         user.password_hash = hash_password(password)
         session.add(user)
         session.commit()
+
+    logger.info("Successful login for username=%s from IP: %s", username, _client_host(request))
     
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     _set_secure_cookie(response, USER_SESSION_COOKIE, _session_token("user", user.id))
@@ -431,10 +441,10 @@ def admin_index(request: Request, session: Session = Depends(get_session)):
 
 @app.post("/admin/login")
 def admin_login(request: Request, password: str = Form(...), _: None = Depends(verify_csrf)):
-    if not ADMIN_PASSWORD:
-        return templates.TemplateResponse("admin_login.html", {"request": request, "error": "ADMIN_PASSWORD не задан в .env", "body_class": "admin"})
     if not hmac.compare_digest(password, ADMIN_PASSWORD):
+        logger.warning("Failed admin login attempt from IP: %s", _client_host(request))
         return templates.TemplateResponse("admin_login.html", {"request": request, "error": "Неверный пароль", "body_class": "admin"})
+    logger.info("Successful admin login from IP: %s", _client_host(request))
     response = RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
     _set_secure_cookie(response, ADMIN_SESSION_COOKIE, _session_token("admin", "admin"))
     _delete_cookie(response, "admin")
@@ -461,6 +471,7 @@ async def admin_add_faction(request: Request, name: str = Form(...), file: Optio
     session.add(faction)
     session.commit()
     session.refresh(faction)
+    logger.info("Admin added faction: %s (ID: %s) from IP: %s", faction.name, faction.id, _client_host(request))
     return RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
 
 
@@ -485,6 +496,7 @@ async def admin_add_hero(request: Request, name: str = Form(...), description: s
     session.add(hero)
     session.commit()
     session.refresh(hero)
+    logger.info("Admin added hero: %s (ID: %s) from IP: %s", hero.name, hero.id, _client_host(request))
     return RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
 
 
@@ -527,6 +539,7 @@ async def admin_edit_faction(request: Request, faction_id: int, name: str = Form
 
     session.add(faction)
     session.commit()
+    logger.info("Admin edited faction: %s (ID: %s) from IP: %s", faction.name, faction.id, _client_host(request))
     return RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
 
 
@@ -577,6 +590,7 @@ async def admin_edit_hero(request: Request, hero_id: int, name: str = Form(...),
 
     session.add(hero)
     session.commit()
+    logger.info("Admin edited hero: %s (ID: %s) from IP: %s", hero.name, hero.id, _client_host(request))
     return RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
 
 
@@ -589,6 +603,8 @@ def admin_delete_hero(request: Request, hero_id: int = Form(...), _: None = Depe
     hero = session.get(Hero, hero_id)
     if not hero:
         raise HTTPException(status_code=404, detail="Hero not found")
+
+    logger.info("Admin deleted hero: %s (ID: %s) from IP: %s", hero.name, hero_id, _client_host(request))
 
     # remove hero image file if exists
     disk = _disk_path_from_url(hero.image)
@@ -610,6 +626,8 @@ def admin_delete_faction(request: Request, faction_id: int = Form(...), _: None 
     faction = session.get(Faction, faction_id)
     if not faction:
         raise HTTPException(status_code=404, detail="Faction not found")
+
+    logger.info("Admin deleted faction: %s (ID: %s) from IP: %s", faction.name, faction_id, _client_host(request))
 
     # delete heroes of this faction (and their images)
     heroes = session.exec(select(Hero).where(Hero.faction_id == faction_id)).all()
@@ -649,6 +667,7 @@ def admin_update_suggestion_status(request: Request, suggestion_id: int, new_sta
         suggestion.status = new_status
         session.add(suggestion)
         session.commit()
+        logger.info("Admin changed suggestion status: ID=%s status=%s from IP: %s", suggestion_id, new_status, _client_host(request))
     
     return RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
 
@@ -662,6 +681,8 @@ def admin_delete_suggestion(request: Request, suggestion_id: int, _: None = Depe
     if not suggestion:
         raise HTTPException(status_code=404, detail="Suggestion not found")
     
+    logger.info("Admin deleted suggestion: ID=%s from IP: %s", suggestion_id, _client_host(request))
+
     session.delete(suggestion)
     session.commit()
     return RedirectResponse(url="/admin", status_code=status.HTTP_302_FOUND)
