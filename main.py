@@ -51,7 +51,7 @@ SECRET_KEY = os.getenv("SESSION_SECRET")
 if not SECRET_KEY:
     raise ValueError("SESSION_SECRET must be set in .env file")
 
-COOKIE_SECURE = os.getenv("COOKIE_SECURE", "0").lower() in {"1", "true", "yes", "on"}
+COOKIE_SECURE = os.getenv("COOKIE_SECURE", "1").lower() in {"1", "true", "yes", "on"}
 USER_SESSION_COOKIE = "user_session"
 ADMIN_SESSION_COOKIE = "admin_session"
 CSRF_MAX_AGE_SECONDS = 60 * 60 * 4
@@ -139,12 +139,12 @@ def _set_secure_cookie(response: RedirectResponse, key: str, value: str, max_age
         max_age=max_age,
         httponly=True,
         secure=COOKIE_SECURE,
-        samesite="lax",
+        samesite="strict",
     )
 
 
 def _delete_cookie(response: RedirectResponse, key: str) -> None:
-    response.delete_cookie(key, httponly=True, secure=COOKIE_SECURE, samesite="lax")
+    response.delete_cookie(key, httponly=True, secure=COOKIE_SECURE, samesite="strict")
 
 
 def _client_host(request: Request) -> str:
